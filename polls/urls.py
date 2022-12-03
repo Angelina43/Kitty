@@ -13,4 +13,6 @@ urlpatterns = [
     path('register/', RegisterViews.as_view(), name='register'),
     path('main/logout/', BBLogoutView.as_view(), name='logout'),
     path('main/register/done/', RegisterDoneView.as_view(), name='register_done'),
+    path('accounts/profile/change/', ChangeUserInfoView.as_view(), name='profile_change'),
+    path('accounts/profile/delete/', DeleteUserView.as_view(), name='profile_delete'),
 ]

@@ -1,19 +1,22 @@
-
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.views.generic import CreateView, DeleteView, TemplateView
+from django.views.generic import CreateView, DeleteView, TemplateView, UpdateView
 from django.shortcuts import render, redirect
 
 from .forms import RegisterUserForm
 from .models import Question, Choice, AbsUser
-from django.template import loader, TemplateDoesNotExist
 from django.urls import reverse
 from django.views import generic
 from django.urls import reverse_lazy
+
+from .forms import ChangeUserInfoForm
+from django.contrib import messages
 
 
 class IndexView(generic.ListView):
@@ -22,7 +25,6 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):
         return Question.objects.order_by('-pub_date')
-
 
 
 class DetailView(generic.DetailView):
@@ -53,15 +55,12 @@ def vote(request, question_id):
 class RegisterViews(CreateView):
     template_name = 'main/register.html'
     form_class = RegisterUserForm
-    success_url = reverse_lazy('main/login')
+    success_url = reverse_lazy('polls:login')
 
 
 class LoginView(LoginView):
     template_name = 'main/login.html'
-    success_url = reverse_lazy('polls/index')
-
-
-
+    success_url = reverse_lazy('polls:index')
 
 
 class BBLogoutView(LoginRequiredMixin, LogoutView):
@@ -81,4 +80,39 @@ def profile(request):
     return render(request, 'main/profile.html')
 
 
+class ChangeUserInfoView(SuccessMessageMixin, LoginRequiredMixin,
+                         UpdateView):
+    model = AbsUser
+    template_name = 'main/change_user_info.html'
+    form_class = ChangeUserInfoForm
+    success_url = reverse_lazy('polls:profile')
+    success_message = 'Личные данные пользователя изменены'
 
+    def dispatch(self, request, *args, **kwargs):
+        self.user_id = request.user.pk
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_object(self, queryset=None):
+        if not queryset:
+            queryset = self.get_queryset()
+        return get_object_or_404(queryset, pk=self.user_id)
+
+
+class DeleteUserView(LoginRequiredMixin, DeleteView):
+    model = AbsUser
+    template_name = 'main/delete_user.html'
+    success_url = reverse_lazy('polls:index')
+
+    def dispatch(self, request, *args, **kwargs):
+        self.user_id = request.user.pk
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        logout(request)
+        messages.add_message(request, messages.SUCCESS, 'Пользователь удален')
+        return super().post(request, *args, **kwargs)
+
+    def get_object(self, queryset=None):
+        if not queryset:
+            queryset = self.get_queryset()
+        return get_object_or_404(queryset, pk=self.user_id)
