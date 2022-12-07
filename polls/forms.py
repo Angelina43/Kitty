@@ -63,6 +63,7 @@ class ChangeUserInfoForm(forms.ModelForm):
         model = AbsUser
         fields = ('username', 'email', 'first_name', 'last_name',
                   'photo')
+        enctype = "multipart/form-data"
 
 
 class AddImage(forms.ModelForm):
