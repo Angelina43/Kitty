@@ -71,3 +71,4 @@ class AddImage(forms.ModelForm):
     class Meta:
         model = Question
         fields = ('img',)
+        enctype = "multipart/form-data"
