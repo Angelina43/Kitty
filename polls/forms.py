@@ -5,7 +5,7 @@ from django.contrib.auth.views import LogoutView, LoginView
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from django.forms import TextInput
-from .models import AbsUser
+from .models import AbsUser, Question
 
 
 class RegisterUserForm(forms.ModelForm):
@@ -63,3 +63,11 @@ class ChangeUserInfoForm(forms.ModelForm):
         model = AbsUser
         fields = ('username', 'email', 'first_name', 'last_name',
                   'photo')
+
+
+class AddImage(forms.ModelForm):
+    img = forms.ImageField(label='Картинка', required=False)
+
+    class Meta:
+        model = Question
+        fields = ('img',)

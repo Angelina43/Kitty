@@ -21,6 +21,8 @@ def validate_image_size(img):
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
     pub_date = models.DateTimeField('date published')
+    img = models.ImageField(max_length=200, upload_to=get_name_file, blank=True, null=True)
+    about = models.CharField(max_length=200, help_text="Описание", blank=False, default='Описание нет')
 
     def was_published_recently(self):
         return self.pub_date >= timezone.now() - datetime.timedelta(days=1)

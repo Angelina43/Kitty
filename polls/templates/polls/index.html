@@ -3,11 +3,23 @@
 {% load bootstrap4 %}
 
 {% block content %}
-
+<style>
+   .about {
+    width: 400px;
+    white-space: nowrap; /* Текст не переносится */
+    overflow: hidden; /* Обрезаем всё за пределами блока */
+    text-overflow: ellipsis; /* Добавляем многоточие */
+   }
+  </style>
 {% if latest_question_list %}
 <ul>
     {% for question in latest_question_list %}
-    <li><a href="{% url 'polls:detail' question.id %}">{{question.question_text}}</a> </li>
+    <li><a href="{% url 'polls:detail' question.id %}">{{question.question_text}}</a></li>
+    {% if question.about %}
+    <p class="about">Короткое описание: {{question.about}}</p>
+    {% else %}
+    <p>Описания нет</p>
+    {% endif %}
     {% endfor %}
 </ul>
     {% else %}

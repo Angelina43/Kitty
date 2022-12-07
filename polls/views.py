@@ -9,7 +9,7 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.views.generic import CreateView, DeleteView, TemplateView, UpdateView
 from django.shortcuts import render, redirect
 
-from .forms import RegisterUserForm
+from .forms import RegisterUserForm, AddImage
 from .models import Question, Choice, AbsUser
 from django.urls import reverse
 from django.views import generic
@@ -111,6 +111,23 @@ class DeleteUserView(LoginRequiredMixin, DeleteView):
         logout(request)
         messages.add_message(request, messages.SUCCESS, 'Пользователь удален')
         return super().post(request, *args, **kwargs)
+
+    def get_object(self, queryset=None):
+        if not queryset:
+            queryset = self.get_queryset()
+        return get_object_or_404(queryset, pk=self.user_id)
+
+
+class AddImage(SuccessMessageMixin, UpdateView):
+    model = Question
+    template_name = 'main/add_image.html'
+    form_class = AddImage
+    success_url = reverse_lazy('polls:index')
+    success_message = 'Картинка успешно добавлена'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.user_id = request.user.pk
+        return super().dispatch(request, *args, **kwargs)
 
     def get_object(self, queryset=None):
         if not queryset:

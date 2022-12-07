@@ -8,7 +8,7 @@
    <h2>Профиль пользователя {{ user.username }} </h2>
    {% if user.first_name and user.last_name %}
        <p>Здравствуйте, {{ user.first_name }} {{ user.last_name }}</p>
-<img src="{{user.photo.url}}">
+    <img src="{{user.photo.url}}">
    {% else %}
        <p>Здравствуйте! </p>
    {% endif %}

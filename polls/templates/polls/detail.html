@@ -12,3 +12,14 @@
     </fieldset>
 <input type="submit" value="Vote">
 </form>
+
+{% if question.img %}
+<img src="{{question.img.url}}" alt="Картинка">
+{% else %}
+<a href="{% url 'polls:add_image' %}">Добавить картинку</a>
+{% endif %}
+{% if question.img %}
+<p>{{question.about}}</p>
+{% else %}
+<p>Описания нет</p>
+{% endif %}
