@@ -52,3 +52,8 @@ class AbsUser(AbstractUser):
 
     def __str__(self):
         return str(self.first_name) + ' ' + str(self.last_name) + ' (' + str(self.username) + ')'
+
+
+class Vote(models.Model):
+    voter = models.ForeignKey('AbsUser', verbose_name='Пользователь', related_name='+', on_delete=models.CASCADE)
+    question_vote = models.ForeignKey(Question, verbose_name='Опрос', on_delete=models.CASCADE)
